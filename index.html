@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bash Reference</title>
+<meta name="description" content="A practical Bash scripting reference: syntax, structure, common commands, and ready-to-use example scripts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<style>
+:root {
+  --bg: #fafaf9; --panel: #ffffff; --text: #1c1917; --muted: #57534e; --border: #e7e5e4;
+  --accent: #15803d; --accent-soft: #dcfce7; --code-bg: #0d1117; --code-text: #e6edf3;
+  --inline-bg: #f0efed; --warn: #b45309; --warn-soft: #fef3c7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c0a09; --panel: #1c1917; --text: #e7e5e4; --muted: #a8a29e; --border: #292524;
+    --accent: #4ade80; --accent-soft: #14532d; --inline-bg: #292524; --warn: #fbbf24; --warn-soft: #422006;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c0a09; --panel: #1c1917; --text: #e7e5e4; --muted: #a8a29e; --border: #292524;
+  --accent: #4ade80; --accent-soft: #14532d; --inline-bg: #292524; --warn: #fbbf24; --warn-soft: #422006;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, sans-serif; }
+a { color: var(--accent); }
+code, pre { font-family: "JetBrains Mono", ui-monospace, monospace; }
+:not(pre) > code { background: var(--inline-bg); padding: .1em .35em; border-radius: 4px; font-size: .88em; }
+
+header.top {
+  position: sticky; top: 0; z-index: 10; height: 56px; display: flex; align-items: center; gap: 12px;
+  padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--border);
+}
+header.top .brand { font-weight: 700; font-family: "JetBrains Mono", monospace; text-decoration: none; color: var(--text); white-space: nowrap; }
+header.top .brand span { color: var(--accent); }
+#search { flex: 1; max-width: 420px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; font-size: 14px; }
+header.top .spacer { flex: 1; }
+.icon-btn { border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 8px; padding: 6px 10px; cursor: pointer; font: inherit; font-size: 14px; text-decoration: none; white-space: nowrap; }
+#menu-btn { display: none; }
+
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); max-width: 1280px; margin: 0 auto; }
+nav.side { position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; padding: 20px 12px 40px; border-right: 1px solid var(--border); }
+nav.side h4 { margin: 18px 8px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+nav.side a { display: block; padding: 4px 8px; border-radius: 6px; color: var(--text); text-decoration: none; font-size: 14px; }
+nav.side a:hover, nav.side a.active { background: var(--accent-soft); color: var(--accent); }
+
+main { padding: 24px 32px 80px; min-width: 0; }
+.hero h1 { font-size: 2.2rem; margin: 8px 0 4px; letter-spacing: -.02em; }
+.hero p { color: var(--muted); margin: 0 0 8px; max-width: 70ch; }
+section.ref { padding-top: 12px; margin-top: 28px; border-top: 1px solid var(--border); }
+section.ref > h2 { font-size: 1.5rem; margin: 8px 0 8px; letter-spacing: -.01em; }
+section.ref h3 { font-size: 1.05rem; margin: 22px 0 6px; }
+section.ref p { max-width: 75ch; }
+
+pre { position: relative; margin: 10px 0 16px; border-radius: 10px; overflow: hidden; }
+pre code.hljs { padding: 14px 16px; font-size: 13.5px; line-height: 1.55; background: var(--code-bg); color: var(--code-text); overflow-x: auto; display: block; }
+.copy { position: absolute; top: 8px; right: 8px; font: 12px Inter, sans-serif; padding: 3px 8px; border-radius: 6px; border: 1px solid #30363d; background: #161b22; color: #c9d1d9; cursor: pointer; opacity: 0; transition: opacity .15s; }
+pre:hover .copy, .copy:focus { opacity: 1; }
+@media (hover: none) { .copy { opacity: 1; } }
+
+table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 14px; display: block; overflow-x: auto; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+td:first-child { white-space: nowrap; }
+td code { white-space: nowrap; }
+
+.note { border-left: 3px solid var(--warn); background: var(--warn-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 14.5px; max-width: 75ch; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 14px 0; }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; text-align: left; font: inherit; color: inherit; transition: border-color .15s; }
+.card:hover, .card.active { border-color: var(--accent); }
+.card .name { font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 14px; color: var(--accent); }
+.card .desc { color: var(--muted); font-size: 14px; margin-top: 4px; }
+#viewer { margin-top: 18px; }
+#viewer .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+#viewer .bar strong { font-family: "JetBrains Mono", monospace; }
+.hidden { display: none !important; }
+#no-results { color: var(--muted); padding: 40px 0; }
+footer { color: var(--muted); font-size: 14px; margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  nav.side { position: fixed; top: 56px; left: 0; width: 270px; background: var(--panel); z-index: 9; transform: translateX(-100%); transition: transform .2s; }
+  nav.side.open { transform: none; box-shadow: 0 0 40px rgba(0,0,0,.3); }
+  #menu-btn { display: inline-block; }
+  main { padding: 16px 16px 60px; }
+  header.top .brand { display: none; }
+  .hero h1 { font-size: 1.7rem; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="icon-btn" id="menu-btn" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="#top"><span>$</span> bash-reference</a>
+  <input id="search" type="search" placeholder="Filter sections… (press / )" aria-label="Filter sections">
+  <span class="spacer"></span>
+  <button class="icon-btn" id="theme-btn" aria-label="Toggle theme">◐</button>
+  <a class="icon-btn" id="repo-link" href="https://github.com/choicespecs/bash-reference">GitHub</a>
+</header>
+
+<div class="layout">
+<nav class="side" id="nav">
+  <h4>Basics</h4>
+  <a href="#structure">Script structure</a>
+  <a href="#variables">Variables &amp; quoting</a>
+  <a href="#expansion">Parameter expansion</a>
+  <a href="#arrays">Arrays</a>
+  <a href="#arithmetic">Arithmetic</a>
+  <h4>Control flow</h4>
+  <a href="#conditionals">Conditionals &amp; tests</a>
+  <a href="#case">case statements</a>
+  <a href="#loops">Loops</a>
+  <a href="#functions">Functions</a>
+  <h4>Input / output</h4>
+  <a href="#arguments">Arguments &amp; getopts</a>
+  <a href="#redirection">Redirection &amp; pipes</a>
+  <a href="#heredocs">Here-docs &amp; substitution</a>
+  <a href="#reading">Reading input &amp; files</a>
+  <h4>Robustness</h4>
+  <a href="#errors">Exit codes &amp; errors</a>
+  <a href="#traps">Traps &amp; cleanup</a>
+  <a href="#debugging">Debugging</a>
+  <a href="#best-practices">Best practices</a>
+  <h4>Commands</h4>
+  <a href="#cmd-files">Files &amp; directories</a>
+  <a href="#cmd-text">Text processing</a>
+  <a href="#cmd-system">System &amp; processes</a>
+  <a href="#cmd-network">Networking</a>
+  <a href="#cmd-archive">Archives</a>
+  <a href="#shortcuts">Shell shortcuts</a>
+  <h4>Examples</h4>
+  <a href="#examples">Example scripts</a>
+</nav>
+
+<main id="top">
+<div class="hero">
+  <h1>Bash scripting reference</h1>
+  <p>Syntax, structure, common commands, and ready-to-use scripts in one place. Use the filter box to narrow sections. Hover over any code block to copy it.</p>
+</div>
+
+<!-- ============================ BASICS ============================ -->
+<section class="ref" id="structure">
+<h2>Script structure</h2>
+<p>Every script should start with a shebang and, for most scripts, “strict mode”. Keep logic inside functions and call <code>main</code> at the bottom.</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# my-script.sh — one-line description of what it does
+set -euo pipefail
+
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &amp;&amp; pwd)"
+
+usage() { echo "Usage: $(basename "$0") &lt;arg&gt;"; }
+
+main() {
+  [[ $# -ge 1 ]] || { usage; exit 1; }
+  echo "Hello, $1"
+}
+
+main "$@"</code></pre>
+<table>
+<tr><th>Line</th><th>Meaning</th></tr>
+<tr><td><code>#!/usr/bin/env bash</code></td><td>Find <code>bash</code> on <code>PATH</code>. More portable than <code>#!/bin/bash</code>, which on macOS is the old bash 3.2.</td></tr>
+<tr><td><code>set -e</code></td><td>Exit right away when a command fails.</td></tr>
+<tr><td><code>set -u</code></td><td>Treat unset variables as an error.</td></tr>
+<tr><td><code>set -o pipefail</code></td><td>A pipeline fails if <em>any</em> command in it fails, not just the last.</td></tr>
+<tr><td><code>main "$@"</code></td><td>Pass every argument through to <code>main</code>, unchanged.</td></tr>
+</table>
+<h3>Running a script</h3>
+<pre><code class="language-bash">chmod +x my-script.sh     # make executable (once)
+./my-script.sh arg1       # run it
+bash my-script.sh arg1    # run without exec permission
+source lib.sh             # run in the CURRENT shell (also: . lib.sh)</code></pre>
+</section>
+
+<section class="ref" id="variables">
+<h2>Variables &amp; quoting</h2>
+<pre><code class="language-bash">name="world"            # no spaces around =
+echo "Hello, $name"     # Hello, world
+echo "Hello, ${name}!"  # braces mark where the name ends
+echo 'Hello, $name'     # single quotes: no expansion → Hello, $name
+
+readonly PI=3.14        # constant
+export PATH="$HOME/bin:$PATH"   # make visible to child processes
+unset name              # delete variable
+
+today=$(date +%F)       # command substitution (prefer over backticks)
+files=$(ls | wc -l)</code></pre>
+<div class="note"><strong>Always quote variables</strong>, as in <code>"$var"</code>. Without quotes, Bash splits the value on spaces and expands globs, so <code>rm $file</code> with <code>file="my notes.txt"</code> tries to delete <code>my</code> and <code>notes.txt</code>.</div>
+<h3>Special variables</h3>
+<table>
+<tr><th>Variable</th><th>Meaning</th></tr>
+<tr><td><code>$0</code></td><td>Script name</td></tr>
+<tr><td><code>$1 … $9, ${10}</code></td><td>Positional arguments</td></tr>
+<tr><td><code>$#</code></td><td>Number of arguments</td></tr>
+<tr><td><code>"$@"</code></td><td>All arguments, each kept as a separate word (almost always what you want)</td></tr>
+<tr><td><code>"$*"</code></td><td>All arguments joined into one string</td></tr>
+<tr><td><code>$?</code></td><td>Exit code of the last command</td></tr>
+<tr><td><code>$$</code></td><td>PID of the current shell</td></tr>
+<tr><td><code>$!</code></td><td>PID of the last background job</td></tr>
+<tr><td><code>$_</code></td><td>Last argument of the previous command</td></tr>
+<tr><td><code>$RANDOM</code></td><td>Random integer 0–32767</td></tr>
+<tr><td><code>$LINENO</code>, <code>$SECONDS</code></td><td>Current line number; seconds since the shell started</td></tr>
+</table>
+</section>
+
+<section class="ref" id="expansion">
+<h2>Parameter expansion</h2>
+<p>Built-in string manipulation, with no need for <code>sed</code> or <code>cut</code>.</p>
+<pre><code class="language-bash">file="/home/user/photos/beach.tar.gz"
+
+${file##*/}       # beach.tar.gz     strip longest match from start (basename)
+${file%/*}        # /home/user/photos  strip shortest match from end (dirname)
+${file#*.}        # tar.gz           strip shortest match from start
+${file##*.}       # gz               extension
+${file%.*}        # /home/user/photos/beach.tar
+${file%%.*}       # /home/user/photos/beach
+
+${#file}          # 31               length
+${file:6:4}       # user             substring (offset:length)
+${file: -6}       # tar.gz           last 6 chars (note the space)
+
+${file/photos/pics}   # replace first match
+${file//o/0}          # replace all matches
+${file^^}             # UPPERCASE   (bash 4+)
+${file,,}             # lowercase   (bash 4+)</code></pre>
+<h3>Defaults &amp; required values</h3>
+<table>
+<tr><th>Syntax</th><th>Result</th></tr>
+<tr><td><code>${var:-default}</code></td><td>Use <code>default</code> if <code>var</code> is unset or empty</td></tr>
+<tr><td><code>${var:=default}</code></td><td>Same, and also assign it to <code>var</code></td></tr>
+<tr><td><code>${var:+other}</code></td><td>Use <code>other</code> only if <code>var</code> <em>is</em> set</td></tr>
+<tr><td><code>${var:?message}</code></td><td>Exit with <code>message</code> if <code>var</code> is unset or empty</td></tr>
+</table>
+<pre><code class="language-bash">port="${PORT:-8080}"
+input="${1:?Usage: $0 &lt;input-file&gt;}"</code></pre>
+<h3>Brace expansion</h3>
+<pre><code class="language-bash">echo {a,b,c}.txt        # a.txt b.txt c.txt
+echo {1..5}             # 1 2 3 4 5
+echo {01..10..3}        # 01 04 07 10
+mkdir -p project/{src,tests,docs}
+cp config.yml{,.bak}    # cp config.yml config.yml.bak</code></pre>
+</section>
+
+<section class="ref" id="arrays">
+<h2>Arrays</h2>
+<h3>Indexed arrays</h3>
+<pre><code class="language-bash">fruits=("apple" "banana" "cherry")
+fruits+=("date")               # append
+
+echo "${fruits[0]}"            # apple
+echo "${fruits[@]}"            # all elements
+echo "${#fruits[@]}"           # length → 4
+echo "${!fruits[@]}"           # indices → 0 1 2 3
+echo "${fruits[@]:1:2}"        # slice → banana cherry
+unset 'fruits[1]'              # remove element
+
+for f in "${fruits[@]}"; do echo "$f"; done
+
+files=(*.txt)                  # array from a glob
+mapfile -t lines &lt; file.txt    # array of lines (bash 4+)</code></pre>
+<h3>Associative arrays (bash 4+)</h3>
+<pre><code class="language-bash">declare -A ports=([http]=80 [https]=443)
+ports[ssh]=22
+
+echo "${ports[https]}"         # 443
+for key in "${!ports[@]}"; do
+  echo "$key → ${ports[$key]}"
+done
+[[ -v ports[ftp] ]] || echo "no ftp key"</code></pre>
+<div class="note">macOS ships bash 3.2, which has no associative arrays or <code>mapfile</code>. Run <code>brew install bash</code> to get bash 5.</div>
+</section>
+
+<section class="ref" id="arithmetic">
+<h2>Arithmetic</h2>
+<pre><code class="language-bash">a=10; b=3
+echo $(( a + b ))     # 13
+echo $(( a / b ))     # 3   (integer division)
+echo $(( a % b ))     # 1
+echo $(( a ** 2 ))    # 100
+(( a++ ))             # increment
+(( count += 5 ))
+(( a &gt; b )) &amp;&amp; echo "a is bigger"
+
+# Floating point — Bash only does integers; use bc or awk
+echo "scale=2; 10 / 3" | bc          # 3.33
+awk 'BEGIN { printf "%.2f\n", 10/3 }' # 3.33</code></pre>
+</section>
+
+<!-- ============================ CONTROL FLOW ============================ -->
+<section class="ref" id="conditionals">
+<h2>Conditionals &amp; tests</h2>
+<pre><code class="language-bash">if [[ -f "$file" ]]; then
+  echo "file exists"
+elif [[ -d "$file" ]]; then
+  echo "it's a directory"
+else
+  echo "not found"
+fi
+
+# One-liners
+[[ -z "$name" ]] &amp;&amp; echo "name is empty"
+[[ -d "$dir" ]] || mkdir -p "$dir"
+
+# Test a command's success directly
+if grep -q "error" log.txt; then echo "found errors"; fi
+if ! command -v jq &gt;/dev/null; then echo "jq not installed"; fi</code></pre>
+<div class="note">Use <code>[[ … ]]</code> instead of <code>[ … ]</code> in Bash. It handles empty variables safely and supports <code>&amp;&amp;</code>, <code>||</code>, <code>=~</code> regex, and glob patterns.</div>
+<h3>File tests</h3>
+<table>
+<tr><th>Test</th><th>True if…</th></tr>
+<tr><td><code>-e path</code></td><td>exists</td></tr>
+<tr><td><code>-f path</code></td><td>is a regular file</td></tr>
+<tr><td><code>-d path</code></td><td>is a directory</td></tr>
+<tr><td><code>-L path</code></td><td>is a symlink</td></tr>
+<tr><td><code>-r / -w / -x path</code></td><td>is readable / writable / executable</td></tr>
+<tr><td><code>-s path</code></td><td>exists and isn't empty</td></tr>
+<tr><td><code>a -nt b</code> / <code>a -ot b</code></td><td>a is newer / older than b</td></tr>
+</table>
+<h3>String tests</h3>
+<table>
+<tr><th>Test</th><th>True if…</th></tr>
+<tr><td><code>-z "$s"</code></td><td>string is empty</td></tr>
+<tr><td><code>-n "$s"</code></td><td>string is not empty</td></tr>
+<tr><td><code>"$a" == "$b"</code></td><td>strings are equal (<code>!=</code> for not equal)</td></tr>
+<tr><td><code>"$s" == *.txt</code></td><td>glob match (no quotes on the pattern)</td></tr>
+<tr><td><code>"$s" =~ ^[0-9]+$</code></td><td>regex match; groups go into <code>${BASH_REMATCH[@]}</code></td></tr>
+</table>
+<h3>Numeric tests</h3>
+<table>
+<tr><th>Test</th><th>Meaning</th></tr>
+<tr><td><code>-eq -ne</code></td><td>equal, not equal</td></tr>
+<tr><td><code>-lt -le</code></td><td>less than, less or equal</td></tr>
+<tr><td><code>-gt -ge</code></td><td>greater than, greater or equal</td></tr>
+<tr><td><code>(( a &gt; b ))</code></td><td>arithmetic form, often easier to read</td></tr>
+</table>
+<h3>Combining</h3>
+<pre><code class="language-bash">[[ -f "$f" &amp;&amp; -r "$f" ]]
+[[ "$env" == "prod" || "$env" == "staging" ]]
+[[ ! -e "$f" ]]</code></pre>
+</section>
+
+<section class="ref" id="case">
+<h2>case statements</h2>
+<pre><code class="language-bash">case "$1" in
+  start)
+    echo "Starting…" ;;
+  stop|halt)
+    echo "Stopping…" ;;
+  *.tar.gz|*.tgz)
+    tar -xzf "$1" ;;
+  [0-9]*)
+    echo "starts with a digit" ;;
+  -h|--help)
+    usage ;;
+  *)
+    echo "Unknown: $1" &gt;&amp;2
+    exit 1 ;;
+esac</code></pre>
+</section>
+
+<section class="ref" id="loops">
+<h2>Loops</h2>
+<pre><code class="language-bash"># Over a list
+for name in alice bob carol; do echo "Hi $name"; done
+
+# Over files (glob — never parse `ls`)
+for f in *.jpg; do
+  [[ -e "$f" ]] || continue     # skip if no matches
+  echo "Processing $f"
+done
+
+# Ranges
+for i in {1..10}; do echo "$i"; done
+for (( i = 0; i &lt; 10; i += 2 )); do echo "$i"; done
+
+# While / until
+count=0
+while (( count &lt; 5 )); do (( count++ )); done
+until ping -c1 example.com &amp;&gt;/dev/null; do sleep 1; done
+
+# Infinite loop with break
+while true; do
+  read -rp "Continue? [y/n] " ans
+  [[ "$ans" == n ]] &amp;&amp; break
+done</code></pre>
+<p><code>break</code> exits the loop and <code>continue</code> skips to the next iteration. Both take a number to act on outer loops, as in <code>break 2</code>.</p>
+</section>
+
+<section class="ref" id="functions">
+<h2>Functions</h2>
+<pre><code class="language-bash">greet() {
+  local name="${1:-stranger}"   # `local` keeps variables scoped to the function
+  echo "Hello, $name"
+}
+greet "Alice"
+
+# "Return" a value by printing it, then capture with $( )
+get_ext() { echo "${1##*.}"; }
+ext=$(get_ext "report.pdf")     # pdf
+
+# `return` sets the exit status (0–255), used for true/false
+is_number() { [[ "$1" =~ ^-?[0-9]+$ ]]; }
+if is_number "42"; then echo "yes"; fi
+
+# All args, arg count
+show_args() { echo "$# args: $*"; for a in "$@"; do echo " - $a"; done; }</code></pre>
+</section>
+
+<!-- ============================ I/O ============================ -->
+<section class="ref" id="arguments">
+<h2>Arguments &amp; getopts</h2>
+<h3>Short options with getopts</h3>
+<pre><code class="language-bash">verbose=0; output=""
+while getopts ":vo:h" opt; do      # leading ":" = handle errors yourself
+  case "$opt" in                   # "o:" = -o takes a value
+    v) verbose=1 ;;
+    o) output="$OPTARG" ;;
+    h) usage; exit 0 ;;
+    :) echo "-$OPTARG needs a value" &gt;&amp;2; exit 1 ;;
+    \?) echo "Unknown option -$OPTARG" &gt;&amp;2; exit 1 ;;
+  esac
+done
+shift $((OPTIND - 1))              # "$@" now holds the remaining args</code></pre>
+<h3>Long options (manual loop)</h3>
+<pre><code class="language-bash">while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -v|--verbose) verbose=1; shift ;;
+    -o|--output)  output="$2"; shift 2 ;;
+    --output=*)   output="${1#*=}"; shift ;;
+    --)           shift; break ;;
+    -*)           echo "Unknown option $1" &gt;&amp;2; exit 1 ;;
+    *)            args+=("$1"); shift ;;
+  esac
+done</code></pre>
+</section>
+
+<section class="ref" id="redirection">
+<h2>Redirection &amp; pipes</h2>
+<table>
+<tr><th>Syntax</th><th>Effect</th></tr>
+<tr><td><code>cmd &gt; file</code></td><td>stdout to file (overwrite)</td></tr>
+<tr><td><code>cmd &gt;&gt; file</code></td><td>stdout to file (append)</td></tr>
+<tr><td><code>cmd 2&gt; file</code></td><td>stderr to file</td></tr>
+<tr><td><code>cmd &gt; file 2&gt;&amp;1</code></td><td>stdout and stderr to file (order matters)</td></tr>
+<tr><td><code>cmd &amp;&gt; file</code></td><td>same as above (bash shorthand)</td></tr>
+<tr><td><code>cmd &gt; /dev/null 2&gt;&amp;1</code></td><td>discard all output</td></tr>
+<tr><td><code>cmd &lt; file</code></td><td>file as stdin</td></tr>
+<tr><td><code>echo "msg" &gt;&amp;2</code></td><td>write to stderr (for errors and logs)</td></tr>
+<tr><td><code>cmd1 | cmd2</code></td><td>stdout of cmd1 → stdin of cmd2</td></tr>
+<tr><td><code>cmd1 |&amp; cmd2</code></td><td>stdout and stderr piped</td></tr>
+<tr><td><code>cmd | tee file</code></td><td>show output <em>and</em> save it (<code>tee -a</code> appends)</td></tr>
+</table>
+<h3>Command chaining</h3>
+<table>
+<tr><th>Syntax</th><th>Runs cmd2…</th></tr>
+<tr><td><code>cmd1 ; cmd2</code></td><td>always</td></tr>
+<tr><td><code>cmd1 &amp;&amp; cmd2</code></td><td>only if cmd1 succeeded</td></tr>
+<tr><td><code>cmd1 || cmd2</code></td><td>only if cmd1 failed</td></tr>
+<tr><td><code>cmd &amp;</code></td><td>runs cmd in the background; <code>wait</code> waits for it</td></tr>
+<tr><td><code>( cmd1; cmd2 )</code></td><td>in a subshell (a <code>cd</code> there doesn't affect the parent)</td></tr>
+<tr><td><code>{ cmd1; cmd2; }</code></td><td>grouped in the current shell</td></tr>
+</table>
+</section>
+
+<section class="ref" id="heredocs">
+<h2>Here-docs &amp; substitution</h2>
+<pre><code class="language-bash"># Here-doc: multi-line input (variables expand)
+cat &lt;&lt;EOF &gt; config.ini
+user=$USER
+home=$HOME
+EOF
+
+# Quoted delimiter: no expansion (good for writing scripts)
+cat &lt;&lt;'EOF'
+echo "$HOME is not expanded here"
+EOF
+
+# &lt;&lt;- strips leading TABs, so you can indent the body
+if true; then
+	cat &lt;&lt;-EOF
+	indented with tabs
+	EOF
+fi
+
+# Here-string
+grep -o '[0-9]*' &lt;&lt;&lt; "order 1234"
+
+# Command substitution
+now="$(date '+%Y-%m-%d %H:%M')"
+
+# Process substitution: treat command output as a file
+diff &lt;(sort a.txt) &lt;(sort b.txt)
+while read -r line; do echo "$line"; done &lt; &lt;(find . -name '*.md')</code></pre>
+</section>
+
+<section class="ref" id="reading">
+<h2>Reading input &amp; files</h2>
+<pre><code class="language-bash"># Prompt the user
+read -rp "Your name: " name
+read -rsp "Password: " pass; echo     # -s = silent
+read -rt 5 -p "Quick! " ans || echo "timed out"
+
+# Read a file line by line (the correct way)
+while IFS= read -r line; do
+  echo "→ $line"
+done &lt; file.txt
+
+# Split fields (CSV-ish)
+while IFS=, read -r name email role; do
+  echo "$name &lt;$email&gt; ($role)"
+done &lt; users.csv
+
+# Handle filenames with spaces/newlines from find
+find . -type f -print0 | while IFS= read -r -d '' f; do
+  echo "$f"
+done
+
+# Whole file into a variable
+content="$(&lt; file.txt)"</code></pre>
+<div class="note"><code>IFS=</code> keeps leading and trailing whitespace. <code>-r</code> stops backslashes from being treated as escape characters. Use both every time you read lines.</div>
+</section>
+
+<!-- ============================ ROBUSTNESS ============================ -->
+<section class="ref" id="errors">
+<h2>Exit codes &amp; error handling</h2>
+<table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td><code>0</code></td><td>success</td></tr>
+<tr><td><code>1</code></td><td>general error</td></tr>
+<tr><td><code>2</code></td><td>misuse of shell builtin / bad usage</td></tr>
+<tr><td><code>126</code></td><td>command found but not executable</td></tr>
+<tr><td><code>127</code></td><td>command not found</td></tr>
+<tr><td><code>128+N</code></td><td>killed by signal N (130 = Ctrl-C, 137 = kill -9)</td></tr>
+</table>
+<pre><code class="language-bash">die() { echo "ERROR: $*" &gt;&amp;2; exit 1; }
+
+[[ -r "$config" ]] || die "Cannot read $config"
+cd "$dir" || die "cd failed"
+
+# Check status explicitly
+if ! output=$(some_command 2&gt;&amp;1); then
+  die "some_command failed: $output"
+fi
+
+# Allow a command to fail under set -e
+rm -f maybe.txt || true
+
+# Require dependencies
+for cmd in curl jq git; do
+  command -v "$cmd" &gt;/dev/null || die "Missing dependency: $cmd"
+done
+
+# Require root
+(( EUID == 0 )) || die "Run as root (sudo)"</code></pre>
+</section>
+
+<section class="ref" id="traps">
+<h2>Traps &amp; cleanup</h2>
+<pre><code class="language-bash">tmp="$(mktemp -d)"
+cleanup() { rm -rf "$tmp"; }
+trap cleanup EXIT                 # runs however the script exits
+trap 'echo "Interrupted"; exit 130' INT TERM
+
+# Report the line where an error occurred
+trap 'echo "Error on line $LINENO" &gt;&amp;2' ERR
+
+# Simple lock so only one copy of the script runs at once
+lock="/tmp/$(basename "$0").lock"
+if ! mkdir "$lock" 2&gt;/dev/null; then
+  echo "Already running" &gt;&amp;2; exit 1
+fi
+trap 'rm -rf "$lock"' EXIT</code></pre>
+</section>
+
+<section class="ref" id="debugging">
+<h2>Debugging</h2>
+<pre><code class="language-bash">bash -n script.sh        # syntax check only, no execution
+bash -x script.sh        # print each command as it runs
+set -x  … set +x         # trace only one section
+
+# More informative trace prefix
+export PS4='+ ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
+# Static analysis (strongly recommended)
+shellcheck script.sh     # brew install shellcheck / apt install shellcheck</code></pre>
+</section>
+
+<section class="ref" id="best-practices">
+<h2>Best practices</h2>
+<ul>
+  <li>Start with <code>#!/usr/bin/env bash</code> and <code>set -euo pipefail</code>.</li>
+  <li><strong>Quote every expansion:</strong> <code>"$var"</code>, <code>"$@"</code>, <code>"$(cmd)"</code>.</li>
+  <li>Use <code>[[ ]]</code> for tests and <code>(( ))</code> for arithmetic.</li>
+  <li>Declare function variables with <code>local</code>.</li>
+  <li>Send errors and logs to stderr (<code>&gt;&amp;2</code>) so stdout stays clean for piping.</li>
+  <li>Never parse <code>ls</code>. Use globs or <code>find -print0</code>.</li>
+  <li>Use <code>$(…)</code>, not backticks.</li>
+  <li>Use <code>mktemp</code> for temp files and clean up with <code>trap … EXIT</code>.</li>
+  <li>Write <code>rm -- "$file"</code> so a filename that starts with <code>-</code> isn't read as an option.</li>
+  <li>Guard dangerous paths: <code>rm -rf "${dir:?}/"*</code> refuses to run if <code>dir</code> is empty.</li>
+  <li>Give risky scripts a dry-run mode, and print a usage message for <code>-h</code>.</li>
+  <li>Run <code>shellcheck</code> on everything.</li>
+  <li>Once a script grows past about 200 lines or needs complex data structures, switch to Python.</li>
+</ul>
+</section>
+
+<!-- ============================ COMMANDS ============================ -->
+<section class="ref" id="cmd-files">
+<h2>Files &amp; directories</h2>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>ls -lah</code></td><td>list all files, long format, human-readable sizes</td></tr>
+<tr><td><code>cd -</code></td><td>go back to the previous directory</td></tr>
+<tr><td><code>pwd</code></td><td>print working directory</td></tr>
+<tr><td><code>mkdir -p a/b/c</code></td><td>create nested directories</td></tr>
+<tr><td><code>cp -r src dest</code></td><td>copy recursively (<code>-a</code> preserves attributes)</td></tr>
+<tr><td><code>mv old new</code></td><td>move or rename</td></tr>
+<tr><td><code>rm -rf dir</code></td><td>delete recursively, no prompt (careful!)</td></tr>
+<tr><td><code>ln -s target link</code></td><td>create a symlink</td></tr>
+<tr><td><code>touch file</code></td><td>create file / update timestamp</td></tr>
+<tr><td><code>chmod 755 f</code> / <code>chmod +x f</code></td><td>change permissions</td></tr>
+<tr><td><code>chown user:group f</code></td><td>change owner</td></tr>
+<tr><td><code>stat file</code></td><td>detailed file info</td></tr>
+<tr><td><code>realpath file</code></td><td>absolute path</td></tr>
+<tr><td><code>rsync -avh src/ dest/</code></td><td>sync directories (add <code>--delete</code> to mirror)</td></tr>
+<tr><td><code>du -sh *</code></td><td>size of each item here</td></tr>
+<tr><td><code>df -h</code></td><td>free disk space</td></tr>
+</table>
+<h3>find</h3>
+<pre><code class="language-bash">find . -name "*.log"                     # by name (-iname = case-insensitive)
+find . -type f -size +100M               # files over 100 MB
+find . -type f -mtime -1                 # modified in the last 24 h
+find . -type d -empty -delete            # delete empty dirs
+find . -name "*.tmp" -exec rm {} +       # run a command on matches
+find . -type f -name "*.sh" -print0 | xargs -0 chmod +x
+find . -path ./node_modules -prune -o -name "*.js" -print   # exclude a dir</code></pre>
+</section>
+
+<section class="ref" id="cmd-text">
+<h2>Text processing</h2>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>cat / less</code></td><td>print / page through a file</td></tr>
+<tr><td><code>head -n 20 / tail -n 20</code></td><td>first / last lines</td></tr>
+<tr><td><code>tail -f app.log</code></td><td>follow a file as it grows</td></tr>
+<tr><td><code>wc -l</code></td><td>count lines (<code>-w</code> words, <code>-c</code> bytes)</td></tr>
+<tr><td><code>sort</code></td><td>sort lines (<code>-n</code> numeric, <code>-r</code> reverse, <code>-u</code> unique, <code>-k2</code> by column 2)</td></tr>
+<tr><td><code>uniq -c</code></td><td>count adjacent duplicates (sort first)</td></tr>
+<tr><td><code>cut -d, -f1,3</code></td><td>extract fields 1 and 3 from CSV</td></tr>
+<tr><td><code>tr 'a-z' 'A-Z'</code></td><td>translate characters (<code>-d</code> deletes)</td></tr>
+<tr><td><code>paste -sd,</code></td><td>join lines with commas</td></tr>
+<tr><td><code>column -t</code></td><td>align output into a table</td></tr>
+<tr><td><code>diff -u a b</code></td><td>compare files</td></tr>
+<tr><td><code>xargs</code></td><td>build commands from stdin (<code>-n1</code>, <code>-P4</code> parallel)</td></tr>
+<tr><td><code>jq</code></td><td>query and transform JSON</td></tr>
+</table>
+<h3>grep</h3>
+<pre><code class="language-bash">grep "error" app.log            # lines containing "error"
+grep -i "error" app.log         # case-insensitive
+grep -v "debug" app.log         # lines NOT matching
+grep -rn "TODO" src/            # recursive, with line numbers
+grep -E "warn|error" app.log    # extended regex (alternation)
+grep -o "[0-9]\+\.[0-9]\+" f    # print only the match
+grep -c "error" app.log         # count matching lines
+grep -l "foo" *.txt             # list files that match
+grep -A3 -B1 "panic" app.log    # 3 lines after, 1 before</code></pre>
+<h3>sed</h3>
+<pre><code class="language-bash">sed 's/old/new/' file           # replace first match per line
+sed 's/old/new/g' file          # replace all
+sed -i 's/old/new/g' file       # edit in place (GNU)
+sed -i '' 's/old/new/g' file    # edit in place (macOS/BSD)
+sed -n '10,20p' file            # print lines 10–20
+sed '/^#/d' file                # delete comment lines
+sed '/^$/d' file                # delete blank lines
+sed -E 's/([a-z]+)@/\1 at /' f  # capture groups</code></pre>
+<h3>awk</h3>
+<pre><code class="language-bash">awk '{print $1}' file                     # first column (whitespace-split)
+awk -F, '{print $2}' data.csv             # custom separator
+awk '$3 &gt; 100' file                       # filter rows
+awk '{sum += $2} END {print sum}' file    # sum a column
+awk 'NR &gt; 1' file                         # skip header line
+awk '{print NR": "$0}' file               # number lines
+awk -F: '{print $1, $NF}' /etc/passwd     # first and last field
+awk '{count[$1]++} END {for (k in count) print count[k], k}' access.log</code></pre>
+<h3>Classic pipelines</h3>
+<pre><code class="language-bash"># Top 10 most frequent words
+tr -cs '[:alpha:]' '\n' &lt; book.txt | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn | head
+
+# Most common lines in a log
+sort app.log | uniq -c | sort -rn | head
+
+# Pretty-print and filter JSON
+curl -s https://api.github.com/repos/torvalds/linux | jq '{name, stars: .stargazers_count}'</code></pre>
+</section>
+
+<section class="ref" id="cmd-system">
+<h2>System &amp; processes</h2>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>ps aux</code></td><td>all running processes</td></tr>
+<tr><td><code>ps aux | grep [n]ginx</code></td><td>find a process (the <code>[n]</code> trick hides grep itself)</td></tr>
+<tr><td><code>pgrep -fl name</code></td><td>find PIDs by name</td></tr>
+<tr><td><code>top</code> / <code>htop</code></td><td>live process monitor</td></tr>
+<tr><td><code>kill PID</code></td><td>ask a process to stop (SIGTERM)</td></tr>
+<tr><td><code>kill -9 PID</code></td><td>force kill (SIGKILL)</td></tr>
+<tr><td><code>pkill -f pattern</code></td><td>kill by name / pattern</td></tr>
+<tr><td><code>jobs / fg / bg</code></td><td>manage shell jobs (Ctrl-Z suspends)</td></tr>
+<tr><td><code>nohup cmd &amp;</code></td><td>keep running after logout</td></tr>
+<tr><td><code>lsof -i :8080</code></td><td>what's using port 8080</td></tr>
+<tr><td><code>uname -a</code></td><td>kernel / OS info</td></tr>
+<tr><td><code>uptime</code></td><td>uptime and load average</td></tr>
+<tr><td><code>free -h</code></td><td>memory usage (Linux)</td></tr>
+<tr><td><code>whoami / id</code></td><td>current user / groups</td></tr>
+<tr><td><code>env / printenv</code></td><td>environment variables</td></tr>
+<tr><td><code>which cmd / type cmd</code></td><td>where a command comes from</td></tr>
+<tr><td><code>time cmd</code></td><td>measure how long a command takes</td></tr>
+<tr><td><code>watch -n 2 cmd</code></td><td>re-run every 2 seconds</td></tr>
+<tr><td><code>crontab -e</code></td><td>edit scheduled jobs</td></tr>
+<tr><td><code>systemctl status svc</code></td><td>service status (systemd)</td></tr>
+<tr><td><code>journalctl -u svc -f</code></td><td>follow a service's logs</td></tr>
+</table>
+<h3>Cron syntax</h3>
+<pre><code class="language-bash"># ┌ minute (0-59)
+# │ ┌ hour (0-23)
+# │ │ ┌ day of month (1-31)
+# │ │ │ ┌ month (1-12)
+# │ │ │ │ ┌ day of week (0-7, Sun=0 or 7)
+# * * * * *  command
+0 2 * * *    /path/backup.sh             # daily at 02:00
+*/15 * * * * /path/healthcheck.sh        # every 15 minutes
+0 9 * * 1-5  /path/report.sh             # weekdays at 09:00
+@reboot      /path/startup.sh            # at boot</code></pre>
+</section>
+
+<section class="ref" id="cmd-network">
+<h2>Networking</h2>
+<pre><code class="language-bash">curl -fsSL https://example.com            # fetch (fail on HTTP errors, silent, follow redirects)
+curl -o file.zip https://example.com/f.zip
+curl -X POST -H "Content-Type: application/json" -d '{"a":1}' https://api.example.com
+curl -I https://example.com               # headers only
+curl -w '%{http_code}\n' -o /dev/null -s https://example.com   # status code only
+wget -q https://example.com/file
+
+ssh user@host                             # remote shell
+ssh user@host 'df -h'                     # run one remote command
+ssh -L 8080:localhost:80 user@host        # local port forward
+scp file.txt user@host:/tmp/              # copy to remote
+rsync -avz ./site/ user@host:/var/www/    # efficient sync over ssh
+ssh-keygen -t ed25519 &amp;&amp; ssh-copy-id user@host
+
+ping -c 4 host
+dig example.com +short                    # DNS lookup
+nc -zv host 22                            # is a port open?
+ss -tulpn   # Linux  /  lsof -iTCP -sTCP:LISTEN   # macOS — listening ports</code></pre>
+</section>
+
+<section class="ref" id="cmd-archive">
+<h2>Archives</h2>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>tar -czf out.tar.gz dir/</code></td><td>create gzip tarball</td></tr>
+<tr><td><code>tar -xzf file.tar.gz</code></td><td>extract (add <code>-C dir</code> for destination)</td></tr>
+<tr><td><code>tar -tzf file.tar.gz</code></td><td>list contents</td></tr>
+<tr><td><code>tar -cJf out.tar.xz dir/</code></td><td>xz compression (smaller, slower)</td></tr>
+<tr><td><code>zip -r out.zip dir/</code></td><td>create zip</td></tr>
+<tr><td><code>unzip file.zip -d dest/</code></td><td>extract zip</td></tr>
+<tr><td><code>gzip f / gunzip f.gz</code></td><td>compress / decompress a single file</td></tr>
+<tr><td><code>zcat f.gz / zgrep pat f.gz</code></td><td>read / search without extracting</td></tr>
+</table>
+<p>To remember the tar flags: <strong>c</strong>reate, e<strong>x</strong>tract, lis<strong>t</strong>, <strong>z</strong> = gzip, <strong>f</strong> = file (always last, because the filename follows it).</p>
+</section>
+
+<section class="ref" id="shortcuts">
+<h2>Shell shortcuts</h2>
+<table>
+<tr><th>Keys / syntax</th><th>Action</th></tr>
+<tr><td><code>Ctrl-A / Ctrl-E</code></td><td>jump to start / end of line</td></tr>
+<tr><td><code>Ctrl-W / Ctrl-U / Ctrl-K</code></td><td>delete word / to start / to end</td></tr>
+<tr><td><code>Ctrl-R</code></td><td>search command history</td></tr>
+<tr><td><code>Ctrl-L</code></td><td>clear screen</td></tr>
+<tr><td><code>Ctrl-C / Ctrl-Z / Ctrl-D</code></td><td>interrupt / suspend / exit (EOF)</td></tr>
+<tr><td><code>!!</code></td><td>repeat last command (<code>sudo !!</code>)</td></tr>
+<tr><td><code>!$</code></td><td>last argument of previous command</td></tr>
+<tr><td><code>!grep</code></td><td>re-run last command starting with grep</td></tr>
+<tr><td><code>^old^new</code></td><td>re-run last command with a substitution</td></tr>
+<tr><td><code>Alt-.</code></td><td>insert last argument (press repeatedly to cycle)</td></tr>
+<tr><td><code>history | grep x</code></td><td>search history</td></tr>
+<tr><td><code>alias ll='ls -lah'</code></td><td>define a shortcut (put in <code>~/.bashrc</code>)</td></tr>
+</table>
+</section>
+
+<!-- ============================ EXAMPLES ============================ -->
+<section class="ref" id="examples">
+<h2>Example scripts</h2>
+<p>Complete, tested scripts from the <a href="https://github.com/choicespecs/bash-reference/tree/main/scripts"><code>scripts/</code></a> folder. Pick one to read the source, then copy it or download the raw file.</p>
+<div class="grid" id="script-cards"></div>
+<div id="viewer" class="hidden">
+  <div class="bar">
+    <strong id="viewer-name"></strong>
+    <span>
+      <a class="icon-btn" id="viewer-raw" href="#" download>Download</a>
+      <a class="icon-btn" id="viewer-gh" href="#">View on GitHub</a>
+    </span>
+  </div>
+  <pre><code class="language-bash" id="viewer-code"></code></pre>
+</div>
+<h3>Quick start</h3>
+<pre><code class="language-bash">git clone https://github.com/choicespecs/bash-reference.git
+cd bash-reference/scripts
+./backup.sh ~/Documents ~/backups 7
+
+# Or grab a single script
+curl -fsSLO https://choicespecs.github.io/bash-reference/scripts/retry.sh &amp;&amp; chmod +x retry.sh</code></pre>
+</section>
+
+<div id="no-results" class="hidden">No sections match your filter.</div>
+
+<footer>
+  Built for quick lookup. Found a mistake or want to add a script? <a href="https://github.com/choicespecs/bash-reference">Open an issue or PR on GitHub</a>.
+</footer>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script>
+const REPO = "https://github.com/choicespecs/bash-reference/blob/main/scripts/";
+const SCRIPTS = [
+  ["script-template.sh",   "Boilerplate with strict mode, getopts, logging, and trap cleanup. Start new scripts here."],
+  ["backup.sh",            "Timestamped .tar.gz backups that keep only the N newest."],
+  ["cleanup-old-files.sh", "Delete files older than N days, with a dry run by default and a name pattern filter."],
+  ["batch-rename.sh",      "Bulk rename: find/replace, lowercase, spaces→underscores, sequential numbering."],
+  ["disk-usage-alert.sh",  "Warn and exit non-zero when a filesystem is over a usage threshold. Built for cron."],
+  ["find-large-files.sh",  "List the largest files under a directory, in human-readable sizes."],
+  ["log-analyzer.sh",      "Summarize an Nginx/Apache access log: top IPs, paths, status codes, 404s."],
+  ["git-update-all.sh",    "Run git pull in every repo under a folder, skipping repos with local changes."],
+  ["healthcheck.sh",       "Check a list of URLs for HTTP status and response time."],
+  ["retry.sh",             "Re-run a command with exponential backoff until it succeeds."],
+  ["system-info.sh",       "Quick system summary (OS, CPU, memory, disk, IP) for Linux and macOS."],
+];
+
+// Copy buttons
+function addCopy(pre) {
+  if (pre.querySelector(".copy")) return;
+  const btn = document.createElement("button");
+  btn.className = "copy"; btn.textContent = "Copy";
+  btn.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(pre.querySelector("code").innerText); btn.textContent = "Copied!"; }
+    catch { btn.textContent = "Failed"; }
+    setTimeout(() => (btn.textContent = "Copy"), 1500);
+  });
+  pre.appendChild(btn);
+}
+document.querySelectorAll("pre code").forEach(c => { hljs.highlightElement(c); addCopy(c.parentElement); });
+
+// Script cards + viewer
+const cards = document.getElementById("script-cards");
+const viewer = document.getElementById("viewer");
+const codeEl = document.getElementById("viewer-code");
+SCRIPTS.forEach(([name, desc]) => {
+  const b = document.createElement("button");
+  b.className = "card";
+  b.innerHTML = `<div class="name"></div><div class="desc"></div>`;
+  b.querySelector(".name").textContent = name;
+  b.querySelector(".desc").textContent = desc;
+  b.addEventListener("click", () => showScript(name, b));
+  cards.appendChild(b);
+});
+async function showScript(name, card) {
+  document.querySelectorAll(".card").forEach(c => c.classList.toggle("active", c === card));
+  viewer.classList.remove("hidden");
+  document.getElementById("viewer-name").textContent = name;
+  document.getElementById("viewer-raw").href = "scripts/" + name;
+  document.getElementById("viewer-gh").href = REPO + name;
+  codeEl.removeAttribute("data-highlighted");
+  codeEl.textContent = "Loading…";
+  try {
+    const res = await fetch("scripts/" + name);
+    if (!res.ok) throw new Error(res.status);
+    codeEl.textContent = await res.text();
+  } catch {
+    codeEl.textContent = `# Couldn't load ${name} here. View it on GitHub:\n# ${REPO}${name}`;
+  }
+  hljs.highlightElement(codeEl);
+  addCopy(codeEl.parentElement);
+  viewer.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// Section filter
+const search = document.getElementById("search");
+const sections = [...document.querySelectorAll("section.ref")];
+const navLinks = [...document.querySelectorAll("nav.side a")];
+search.addEventListener("input", () => {
+  const q = search.value.trim().toLowerCase();
+  let shown = 0;
+  sections.forEach(s => {
+    const match = !q || s.textContent.toLowerCase().includes(q);
+    s.classList.toggle("hidden", !match);
+    if (match) shown++;
+  });
+  navLinks.forEach(a => {
+    const s = document.querySelector(a.getAttribute("href"));
+    a.classList.toggle("hidden", s && s.classList.contains("hidden"));
+  });
+  document.querySelector(".hero").classList.toggle("hidden", !!q);
+  document.getElementById("no-results").classList.toggle("hidden", shown > 0);
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "/" && document.activeElement !== search) { e.preventDefault(); search.focus(); }
+  if (e.key === "Escape" && document.activeElement === search) { search.value = ""; search.dispatchEvent(new Event("input")); search.blur(); }
+});
+
+// Active nav link on scroll
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (en.isIntersecting) navLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id));
+  });
+}, { rootMargin: "-60px 0px -70% 0px" });
+sections.forEach(s => io.observe(s));
+
+// Mobile menu
+const nav = document.getElementById("nav");
+document.getElementById("menu-btn").addEventListener("click", () => nav.classList.toggle("open"));
+navLinks.forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
+
+// Theme toggle
+const root = document.documentElement;
+try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch {}
+document.getElementById("theme-btn").addEventListener("click", () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", root.dataset.theme); } catch {}
+});
+</script>
+</body>
+</html>
