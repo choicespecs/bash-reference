@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reading input &amp; files — Bash Reference</title>
+<meta name="description" content="A practical Bash scripting reference: syntax, structure, common commands, and ready-to-use example scripts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="top">
+  <button class="icon-btn" id="menu-btn" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html"><span>$</span> bash-reference</a>
+  <input id="search" type="search" placeholder="Filter sections… (press / )" aria-label="Filter sections">
+  <span class="spacer"></span>
+  <button class="icon-btn" id="theme-btn" aria-label="Toggle theme">◐</button>
+  <a class="icon-btn" id="repo-link" href="https://github.com/choicespecs/bash-reference">GitHub</a>
+</header>
+
+<div class="layout">
+<nav class="side" id="nav">
+  <h4>Basics</h4>
+  <a href="structure.html">Script structure</a>
+  <a href="variables.html">Variables &amp; quoting</a>
+  <a href="expansion.html">Parameter expansion</a>
+  <a href="arrays.html">Arrays</a>
+  <a href="arithmetic.html">Arithmetic</a>
+  <h4>Control flow</h4>
+  <a href="conditionals.html">Conditionals &amp; tests</a>
+  <a href="case.html">case statements</a>
+  <a href="loops.html">Loops</a>
+  <a href="functions.html">Functions</a>
+  <h4>Input / output</h4>
+  <a href="arguments.html">Arguments &amp; getopts</a>
+  <a href="redirection.html">Redirection &amp; pipes</a>
+  <a href="heredocs.html">Here-docs &amp; substitution</a>
+  <a aria-current="page" class="active" href="reading.html">Reading input &amp; files</a>
+  <h4>Robustness</h4>
+  <a href="errors.html">Exit codes &amp; errors</a>
+  <a href="traps.html">Traps &amp; cleanup</a>
+  <a href="debugging.html">Debugging</a>
+  <a href="best-practices.html">Best practices</a>
+  <h4>Commands</h4>
+  <a href="cmd-files.html">Files &amp; directories</a>
+  <a href="cmd-text.html">Text processing</a>
+  <a href="cmd-system.html">System &amp; processes</a>
+  <a href="cmd-network.html">Networking</a>
+  <a href="cmd-archive.html">Archives</a>
+  <a href="shortcuts.html">Shell shortcuts</a>
+  <h4>Examples</h4>
+  <a href="examples.html">Example scripts</a>
+</nav>
+
+<main id="top">
+
+<div class="crumbs"><a href="index.html">Bash Reference</a> / Reading input &amp; files</div>
+<section class="ref" id="reading">
+<h2>Reading input &amp; files</h2>
+<pre><code class="language-bash"># Prompt the user
+read -rp "Your name: " name
+read -rsp "Password: " pass; echo     # -s = silent
+read -rt 5 -p "Quick! " ans || echo "timed out"
+
+# Read a file line by line (the correct way)
+while IFS= read -r line; do
+  echo "→ $line"
+done &lt; file.txt
+
+# Split fields (CSV-ish)
+while IFS=, read -r name email role; do
+  echo "$name &lt;$email&gt; ($role)"
+done &lt; users.csv
+
+# Handle filenames with spaces/newlines from find
+find . -type f -print0 | while IFS= read -r -d '' f; do
+  echo "$f"
+done
+
+# Whole file into a variable
+content="$(&lt; file.txt)"</code></pre>
+<div class="note"><code>IFS=</code> keeps leading and trailing whitespace. <code>-r</code> stops backslashes from being treated as escape characters. Use both every time you read lines.</div>
+</section>
+<nav class="pager" aria-label="Previous and next"><a class="prev" href="heredocs.html"><small>← Previous</small>Here-docs &amp; substitution</a><a class="next" href="errors.html"><small>Next →</small>Exit codes &amp; errors</a></nav>
+
+
+
+
+<footer>
+  Built for quick lookup. Found a mistake or want to add a script? <a href="https://github.com/choicespecs/bash-reference">Open an issue or PR on GitHub</a>.
+</footer>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/search.js"></script>
+</body>
+</html>

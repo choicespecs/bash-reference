@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Script structure — Bash Reference</title>
+<meta name="description" content="Every script should start with a shebang and, for most scripts, “strict mode”. Keep logic inside functions and call main at the bottom.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="top">
+  <button class="icon-btn" id="menu-btn" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html"><span>$</span> bash-reference</a>
+  <input id="search" type="search" placeholder="Filter sections… (press / )" aria-label="Filter sections">
+  <span class="spacer"></span>
+  <button class="icon-btn" id="theme-btn" aria-label="Toggle theme">◐</button>
+  <a class="icon-btn" id="repo-link" href="https://github.com/choicespecs/bash-reference">GitHub</a>
+</header>
+
+<div class="layout">
+<nav class="side" id="nav">
+  <h4>Basics</h4>
+  <a aria-current="page" class="active" href="structure.html">Script structure</a>
+  <a href="variables.html">Variables &amp; quoting</a>
+  <a href="expansion.html">Parameter expansion</a>
+  <a href="arrays.html">Arrays</a>
+  <a href="arithmetic.html">Arithmetic</a>
+  <h4>Control flow</h4>
+  <a href="conditionals.html">Conditionals &amp; tests</a>
+  <a href="case.html">case statements</a>
+  <a href="loops.html">Loops</a>
+  <a href="functions.html">Functions</a>
+  <h4>Input / output</h4>
+  <a href="arguments.html">Arguments &amp; getopts</a>
+  <a href="redirection.html">Redirection &amp; pipes</a>
+  <a href="heredocs.html">Here-docs &amp; substitution</a>
+  <a href="reading.html">Reading input &amp; files</a>
+  <h4>Robustness</h4>
+  <a href="errors.html">Exit codes &amp; errors</a>
+  <a href="traps.html">Traps &amp; cleanup</a>
+  <a href="debugging.html">Debugging</a>
+  <a href="best-practices.html">Best practices</a>
+  <h4>Commands</h4>
+  <a href="cmd-files.html">Files &amp; directories</a>
+  <a href="cmd-text.html">Text processing</a>
+  <a href="cmd-system.html">System &amp; processes</a>
+  <a href="cmd-network.html">Networking</a>
+  <a href="cmd-archive.html">Archives</a>
+  <a href="shortcuts.html">Shell shortcuts</a>
+  <h4>Examples</h4>
+  <a href="examples.html">Example scripts</a>
+</nav>
+
+<main id="top">
+
+<div class="crumbs"><a href="index.html">Bash Reference</a> / Script structure</div>
+<section class="ref" id="structure">
+<h2>Script structure</h2>
+<p>Every script should start with a shebang and, for most scripts, “strict mode”. Keep logic inside functions and call <code>main</code> at the bottom.</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# my-script.sh — one-line description of what it does
+set -euo pipefail
+
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &amp;&amp; pwd)"
+
+usage() { echo "Usage: $(basename "$0") &lt;arg&gt;"; }
+
+main() {
+  [[ $# -ge 1 ]] || { usage; exit 1; }
+  echo "Hello, $1"
+}
+
+main "$@"</code></pre>
+<table>
+<tr><th>Line</th><th>Meaning</th></tr>
+<tr><td><code>#!/usr/bin/env bash</code></td><td>Find <code>bash</code> on <code>PATH</code>. More portable than <code>#!/bin/bash</code>, which on macOS is the old bash 3.2.</td></tr>
+<tr><td><code>set -e</code></td><td>Exit right away when a command fails.</td></tr>
+<tr><td><code>set -u</code></td><td>Treat unset variables as an error.</td></tr>
+<tr><td><code>set -o pipefail</code></td><td>A pipeline fails if <em>any</em> command in it fails, not just the last.</td></tr>
+<tr><td><code>main "$@"</code></td><td>Pass every argument through to <code>main</code>, unchanged.</td></tr>
+</table>
+<h3>Running a script</h3>
+<pre><code class="language-bash">chmod +x my-script.sh     # make executable (once)
+./my-script.sh arg1       # run it
+bash my-script.sh arg1    # run without exec permission
+source lib.sh             # run in the CURRENT shell (also: . lib.sh)</code></pre>
+</section>
+<nav class="pager" aria-label="Previous and next"><a class="prev" href="index.html"><small>← Back to</small>Contents</a><a class="next" href="variables.html"><small>Next →</small>Variables &amp; quoting</a></nav>
+
+
+
+
+<footer>
+  Built for quick lookup. Found a mistake or want to add a script? <a href="https://github.com/choicespecs/bash-reference">Open an issue or PR on GitHub</a>.
+</footer>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/search.js"></script>
+</body>
+</html>

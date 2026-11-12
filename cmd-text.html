@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Text processing — Bash Reference</title>
+<meta name="description" content="A practical Bash scripting reference: syntax, structure, common commands, and ready-to-use example scripts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="top">
+  <button class="icon-btn" id="menu-btn" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html"><span>$</span> bash-reference</a>
+  <input id="search" type="search" placeholder="Filter sections… (press / )" aria-label="Filter sections">
+  <span class="spacer"></span>
+  <button class="icon-btn" id="theme-btn" aria-label="Toggle theme">◐</button>
+  <a class="icon-btn" id="repo-link" href="https://github.com/choicespecs/bash-reference">GitHub</a>
+</header>
+
+<div class="layout">
+<nav class="side" id="nav">
+  <h4>Basics</h4>
+  <a href="structure.html">Script structure</a>
+  <a href="variables.html">Variables &amp; quoting</a>
+  <a href="expansion.html">Parameter expansion</a>
+  <a href="arrays.html">Arrays</a>
+  <a href="arithmetic.html">Arithmetic</a>
+  <h4>Control flow</h4>
+  <a href="conditionals.html">Conditionals &amp; tests</a>
+  <a href="case.html">case statements</a>
+  <a href="loops.html">Loops</a>
+  <a href="functions.html">Functions</a>
+  <h4>Input / output</h4>
+  <a href="arguments.html">Arguments &amp; getopts</a>
+  <a href="redirection.html">Redirection &amp; pipes</a>
+  <a href="heredocs.html">Here-docs &amp; substitution</a>
+  <a href="reading.html">Reading input &amp; files</a>
+  <h4>Robustness</h4>
+  <a href="errors.html">Exit codes &amp; errors</a>
+  <a href="traps.html">Traps &amp; cleanup</a>
+  <a href="debugging.html">Debugging</a>
+  <a href="best-practices.html">Best practices</a>
+  <h4>Commands</h4>
+  <a href="cmd-files.html">Files &amp; directories</a>
+  <a aria-current="page" class="active" href="cmd-text.html">Text processing</a>
+  <a href="cmd-system.html">System &amp; processes</a>
+  <a href="cmd-network.html">Networking</a>
+  <a href="cmd-archive.html">Archives</a>
+  <a href="shortcuts.html">Shell shortcuts</a>
+  <h4>Examples</h4>
+  <a href="examples.html">Example scripts</a>
+</nav>
+
+<main id="top">
+
+<div class="crumbs"><a href="index.html">Bash Reference</a> / Text processing</div>
+<section class="ref" id="cmd-text">
+<h2>Text processing</h2>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>cat / less</code></td><td>print / page through a file</td></tr>
+<tr><td><code>head -n 20 / tail -n 20</code></td><td>first / last lines</td></tr>
+<tr><td><code>tail -f app.log</code></td><td>follow a file as it grows</td></tr>
+<tr><td><code>wc -l</code></td><td>count lines (<code>-w</code> words, <code>-c</code> bytes)</td></tr>
+<tr><td><code>sort</code></td><td>sort lines (<code>-n</code> numeric, <code>-r</code> reverse, <code>-u</code> unique, <code>-k2</code> by column 2)</td></tr>
+<tr><td><code>uniq -c</code></td><td>count adjacent duplicates (sort first)</td></tr>
+<tr><td><code>cut -d, -f1,3</code></td><td>extract fields 1 and 3 from CSV</td></tr>
+<tr><td><code>tr 'a-z' 'A-Z'</code></td><td>translate characters (<code>-d</code> deletes)</td></tr>
+<tr><td><code>paste -sd,</code></td><td>join lines with commas</td></tr>
+<tr><td><code>column -t</code></td><td>align output into a table</td></tr>
+<tr><td><code>diff -u a b</code></td><td>compare files</td></tr>
+<tr><td><code>xargs</code></td><td>build commands from stdin (<code>-n1</code>, <code>-P4</code> parallel)</td></tr>
+<tr><td><code>jq</code></td><td>query and transform JSON</td></tr>
+</table>
+<h3>grep</h3>
+<pre><code class="language-bash">grep "error" app.log            # lines containing "error"
+grep -i "error" app.log         # case-insensitive
+grep -v "debug" app.log         # lines NOT matching
+grep -rn "TODO" src/            # recursive, with line numbers
+grep -E "warn|error" app.log    # extended regex (alternation)
+grep -o "[0-9]\+\.[0-9]\+" f    # print only the match
+grep -c "error" app.log         # count matching lines
+grep -l "foo" *.txt             # list files that match
+grep -A3 -B1 "panic" app.log    # 3 lines after, 1 before</code></pre>
+<h3>sed</h3>
+<pre><code class="language-bash">sed 's/old/new/' file           # replace first match per line
+sed 's/old/new/g' file          # replace all
+sed -i 's/old/new/g' file       # edit in place (GNU)
+sed -i '' 's/old/new/g' file    # edit in place (macOS/BSD)
+sed -n '10,20p' file            # print lines 10–20
+sed '/^#/d' file                # delete comment lines
+sed '/^$/d' file                # delete blank lines
+sed -E 's/([a-z]+)@/\1 at /' f  # capture groups</code></pre>
+<h3>awk</h3>
+<pre><code class="language-bash">awk '{print $1}' file                     # first column (whitespace-split)
+awk -F, '{print $2}' data.csv             # custom separator
+awk '$3 &gt; 100' file                       # filter rows
+awk '{sum += $2} END {print sum}' file    # sum a column
+awk 'NR &gt; 1' file                         # skip header line
+awk '{print NR": "$0}' file               # number lines
+awk -F: '{print $1, $NF}' /etc/passwd     # first and last field
+awk '{count[$1]++} END {for (k in count) print count[k], k}' access.log</code></pre>
+<h3>Classic pipelines</h3>
+<pre><code class="language-bash"># Top 10 most frequent words
+tr -cs '[:alpha:]' '\n' &lt; book.txt | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn | head
+
+# Most common lines in a log
+sort app.log | uniq -c | sort -rn | head
+
+# Pretty-print and filter JSON
+curl -s https://api.github.com/repos/torvalds/linux | jq '{name, stars: .stargazers_count}'</code></pre>
+</section>
+<nav class="pager" aria-label="Previous and next"><a class="prev" href="cmd-files.html"><small>← Previous</small>Files &amp; directories</a><a class="next" href="cmd-system.html"><small>Next →</small>System &amp; processes</a></nav>
+
+
+
+
+<footer>
+  Built for quick lookup. Found a mistake or want to add a script? <a href="https://github.com/choicespecs/bash-reference">Open an issue or PR on GitHub</a>.
+</footer>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/search.js"></script>
+</body>
+</html>

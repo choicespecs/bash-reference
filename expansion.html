@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parameter expansion — Bash Reference</title>
+<meta name="description" content="Built-in string manipulation, with no need for sed or cut .">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="top">
+  <button class="icon-btn" id="menu-btn" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html"><span>$</span> bash-reference</a>
+  <input id="search" type="search" placeholder="Filter sections… (press / )" aria-label="Filter sections">
+  <span class="spacer"></span>
+  <button class="icon-btn" id="theme-btn" aria-label="Toggle theme">◐</button>
+  <a class="icon-btn" id="repo-link" href="https://github.com/choicespecs/bash-reference">GitHub</a>
+</header>
+
+<div class="layout">
+<nav class="side" id="nav">
+  <h4>Basics</h4>
+  <a href="structure.html">Script structure</a>
+  <a href="variables.html">Variables &amp; quoting</a>
+  <a aria-current="page" class="active" href="expansion.html">Parameter expansion</a>
+  <a href="arrays.html">Arrays</a>
+  <a href="arithmetic.html">Arithmetic</a>
+  <h4>Control flow</h4>
+  <a href="conditionals.html">Conditionals &amp; tests</a>
+  <a href="case.html">case statements</a>
+  <a href="loops.html">Loops</a>
+  <a href="functions.html">Functions</a>
+  <h4>Input / output</h4>
+  <a href="arguments.html">Arguments &amp; getopts</a>
+  <a href="redirection.html">Redirection &amp; pipes</a>
+  <a href="heredocs.html">Here-docs &amp; substitution</a>
+  <a href="reading.html">Reading input &amp; files</a>
+  <h4>Robustness</h4>
+  <a href="errors.html">Exit codes &amp; errors</a>
+  <a href="traps.html">Traps &amp; cleanup</a>
+  <a href="debugging.html">Debugging</a>
+  <a href="best-practices.html">Best practices</a>
+  <h4>Commands</h4>
+  <a href="cmd-files.html">Files &amp; directories</a>
+  <a href="cmd-text.html">Text processing</a>
+  <a href="cmd-system.html">System &amp; processes</a>
+  <a href="cmd-network.html">Networking</a>
+  <a href="cmd-archive.html">Archives</a>
+  <a href="shortcuts.html">Shell shortcuts</a>
+  <h4>Examples</h4>
+  <a href="examples.html">Example scripts</a>
+</nav>
+
+<main id="top">
+
+<div class="crumbs"><a href="index.html">Bash Reference</a> / Parameter expansion</div>
+<section class="ref" id="expansion">
+<h2>Parameter expansion</h2>
+<p>Built-in string manipulation, with no need for <code>sed</code> or <code>cut</code>.</p>
+<pre><code class="language-bash">file="/home/user/photos/beach.tar.gz"
+
+${file##*/}       # beach.tar.gz     strip longest match from start (basename)
+${file%/*}        # /home/user/photos  strip shortest match from end (dirname)
+${file#*.}        # tar.gz           strip shortest match from start
+${file##*.}       # gz               extension
+${file%.*}        # /home/user/photos/beach.tar
+${file%%.*}       # /home/user/photos/beach
+
+${#file}          # 31               length
+${file:6:4}       # user             substring (offset:length)
+${file: -6}       # tar.gz           last 6 chars (note the space)
+
+${file/photos/pics}   # replace first match
+${file//o/0}          # replace all matches
+${file^^}             # UPPERCASE   (bash 4+)
+${file,,}             # lowercase   (bash 4+)</code></pre>
+<h3>Defaults &amp; required values</h3>
+<table>
+<tr><th>Syntax</th><th>Result</th></tr>
+<tr><td><code>${var:-default}</code></td><td>Use <code>default</code> if <code>var</code> is unset or empty</td></tr>
+<tr><td><code>${var:=default}</code></td><td>Same, and also assign it to <code>var</code></td></tr>
+<tr><td><code>${var:+other}</code></td><td>Use <code>other</code> only if <code>var</code> <em>is</em> set</td></tr>
+<tr><td><code>${var:?message}</code></td><td>Exit with <code>message</code> if <code>var</code> is unset or empty</td></tr>
+</table>
+<pre><code class="language-bash">port="${PORT:-8080}"
+input="${1:?Usage: $0 &lt;input-file&gt;}"</code></pre>
+<h3>Brace expansion</h3>
+<pre><code class="language-bash">echo {a,b,c}.txt        # a.txt b.txt c.txt
+echo {1..5}             # 1 2 3 4 5
+echo {01..10..3}        # 01 04 07 10
+mkdir -p project/{src,tests,docs}
+cp config.yml{,.bak}    # cp config.yml config.yml.bak</code></pre>
+</section>
+<nav class="pager" aria-label="Previous and next"><a class="prev" href="variables.html"><small>← Previous</small>Variables &amp; quoting</a><a class="next" href="arrays.html"><small>Next →</small>Arrays</a></nav>
+
+
+
+
+<footer>
+  Built for quick lookup. Found a mistake or want to add a script? <a href="https://github.com/choicespecs/bash-reference">Open an issue or PR on GitHub</a>.
+</footer>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/search.js"></script>
+</body>
+</html>

@@ -36,7 +36,7 @@ Every script prints usage notes in its header comment.
 
 ## Local preview
 
-The site is a single static `index.html`. It fetches the scripts, so preview it through a local server rather than opening the file directly:
+The site is static HTML with no build step: one page per topic (`loops.html`, `traps.html`, …), with `index.html` as the contents page. Shared CSS and JS are in `assets/`. `assets/search-index.js` holds the text that the search box searches, so update it when you change a page. The examples page fetches the scripts, so preview the site through a local server rather than opening the files directly:
 
 ```bash
 python3 -m http.server 8000   # then open http://localhost:8000

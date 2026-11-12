@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System &amp; processes — Bash Reference</title>
+<meta name="description" content="A practical Bash scripting reference: syntax, structure, common commands, and ready-to-use example scripts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="top">
+  <button class="icon-btn" id="menu-btn" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html"><span>$</span> bash-reference</a>
+  <input id="search" type="search" placeholder="Filter sections… (press / )" aria-label="Filter sections">
+  <span class="spacer"></span>
+  <button class="icon-btn" id="theme-btn" aria-label="Toggle theme">◐</button>
+  <a class="icon-btn" id="repo-link" href="https://github.com/choicespecs/bash-reference">GitHub</a>
+</header>
+
+<div class="layout">
+<nav class="side" id="nav">
+  <h4>Basics</h4>
+  <a href="structure.html">Script structure</a>
+  <a href="variables.html">Variables &amp; quoting</a>
+  <a href="expansion.html">Parameter expansion</a>
+  <a href="arrays.html">Arrays</a>
+  <a href="arithmetic.html">Arithmetic</a>
+  <h4>Control flow</h4>
+  <a href="conditionals.html">Conditionals &amp; tests</a>
+  <a href="case.html">case statements</a>
+  <a href="loops.html">Loops</a>
+  <a href="functions.html">Functions</a>
+  <h4>Input / output</h4>
+  <a href="arguments.html">Arguments &amp; getopts</a>
+  <a href="redirection.html">Redirection &amp; pipes</a>
+  <a href="heredocs.html">Here-docs &amp; substitution</a>
+  <a href="reading.html">Reading input &amp; files</a>
+  <h4>Robustness</h4>
+  <a href="errors.html">Exit codes &amp; errors</a>
+  <a href="traps.html">Traps &amp; cleanup</a>
+  <a href="debugging.html">Debugging</a>
+  <a href="best-practices.html">Best practices</a>
+  <h4>Commands</h4>
+  <a href="cmd-files.html">Files &amp; directories</a>
+  <a href="cmd-text.html">Text processing</a>
+  <a aria-current="page" class="active" href="cmd-system.html">System &amp; processes</a>
+  <a href="cmd-network.html">Networking</a>
+  <a href="cmd-archive.html">Archives</a>
+  <a href="shortcuts.html">Shell shortcuts</a>
+  <h4>Examples</h4>
+  <a href="examples.html">Example scripts</a>
+</nav>
+
+<main id="top">
+
+<div class="crumbs"><a href="index.html">Bash Reference</a> / System &amp; processes</div>
+<section class="ref" id="cmd-system">
+<h2>System &amp; processes</h2>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>ps aux</code></td><td>all running processes</td></tr>
+<tr><td><code>ps aux | grep [n]ginx</code></td><td>find a process (the <code>[n]</code> trick hides grep itself)</td></tr>
+<tr><td><code>pgrep -fl name</code></td><td>find PIDs by name</td></tr>
+<tr><td><code>top</code> / <code>htop</code></td><td>live process monitor</td></tr>
+<tr><td><code>kill PID</code></td><td>ask a process to stop (SIGTERM)</td></tr>
+<tr><td><code>kill -9 PID</code></td><td>force kill (SIGKILL)</td></tr>
+<tr><td><code>pkill -f pattern</code></td><td>kill by name / pattern</td></tr>
+<tr><td><code>jobs / fg / bg</code></td><td>manage shell jobs (Ctrl-Z suspends)</td></tr>
+<tr><td><code>nohup cmd &amp;</code></td><td>keep running after logout</td></tr>
+<tr><td><code>lsof -i :8080</code></td><td>what's using port 8080</td></tr>
+<tr><td><code>uname -a</code></td><td>kernel / OS info</td></tr>
+<tr><td><code>uptime</code></td><td>uptime and load average</td></tr>
+<tr><td><code>free -h</code></td><td>memory usage (Linux)</td></tr>
+<tr><td><code>whoami / id</code></td><td>current user / groups</td></tr>
+<tr><td><code>env / printenv</code></td><td>environment variables</td></tr>
+<tr><td><code>which cmd / type cmd</code></td><td>where a command comes from</td></tr>
+<tr><td><code>time cmd</code></td><td>measure how long a command takes</td></tr>
+<tr><td><code>watch -n 2 cmd</code></td><td>re-run every 2 seconds</td></tr>
+<tr><td><code>crontab -e</code></td><td>edit scheduled jobs</td></tr>
+<tr><td><code>systemctl status svc</code></td><td>service status (systemd)</td></tr>
+<tr><td><code>journalctl -u svc -f</code></td><td>follow a service's logs</td></tr>
+</table>
+<h3>Cron syntax</h3>
+<pre><code class="language-bash"># ┌ minute (0-59)
+# │ ┌ hour (0-23)
+# │ │ ┌ day of month (1-31)
+# │ │ │ ┌ month (1-12)
+# │ │ │ │ ┌ day of week (0-7, Sun=0 or 7)
+# * * * * *  command
+0 2 * * *    /path/backup.sh             # daily at 02:00
+*/15 * * * * /path/healthcheck.sh        # every 15 minutes
+0 9 * * 1-5  /path/report.sh             # weekdays at 09:00
+@reboot      /path/startup.sh            # at boot</code></pre>
+</section>
+<nav class="pager" aria-label="Previous and next"><a class="prev" href="cmd-text.html"><small>← Previous</small>Text processing</a><a class="next" href="cmd-network.html"><small>Next →</small>Networking</a></nav>
+
+
+
+
+<footer>
+  Built for quick lookup. Found a mistake or want to add a script? <a href="https://github.com/choicespecs/bash-reference">Open an issue or PR on GitHub</a>.
+</footer>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/search.js"></script>
+</body>
+</html>
