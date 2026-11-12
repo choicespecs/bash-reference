@@ -102,3 +102,4 @@ footer { color: var(--muted); font-size: 14px; margin-top: 60px; padding-top: 16
 .search-results span{display:block;font-size:.85rem;opacity:.75}
 .search-results .none{padding:10px 14px;opacity:.7}
 @media (max-width:640px){.pager{grid-template-columns:1fr}.pager a.next{grid-column:1}}
+code,kbd,pre,samp{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
